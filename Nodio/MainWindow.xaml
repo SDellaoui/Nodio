@@ -15,6 +15,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top">
@@ -27,6 +28,7 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <nodenetwork:NetworkView x:Name="networkView" Grid.Row="1"/>
+        <nodenetwork:NetworkView x:Name="networkView" Grid.Column="0" Grid.Row="1" Margin="0,0,192,0"/>
+        <Button Content="Play Sound" HorizontalAlignment="Left" Margin="648,32,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="btnPlaySound_Click"/>
     </Grid>
 </Window>

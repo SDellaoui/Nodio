@@ -1,6 +1,7 @@
 ﻿using NodeNetwork.Toolkit.ValueNode;
 using NodeNetwork.ViewModels;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
+using IrrKlang;
 
 namespace Nodio
 {
@@ -65,6 +68,16 @@ namespace Nodio
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void btnPlaySound_Click(object sender, RoutedEventArgs e)
+        {
+            ISoundEngine soundengine = new ISoundEngine();
+            var projectPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(Directory.GetCurrentDirectory()));
+            var soundPath = System.IO.Path.Combine(projectPath, "../data/sound");
+            Console.WriteLine(projectPath);//Environment.CurrentDirectory);
+            ISound sound = soundengine.Play2D(System.IO.Path.Combine(soundPath,"bell.wav"));
+            sound.Looped = true;
         }
     }
 }
