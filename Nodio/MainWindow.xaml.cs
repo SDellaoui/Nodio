@@ -16,7 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IrrKlang;
+using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 
 namespace Nodio
 {
@@ -25,6 +26,8 @@ namespace Nodio
     /// </summary>
     public partial class MainWindow : Window
     {
+        private WaveOutEvent outputDevice;
+        private AudioFileReader audioFile;
         public MainWindow()
         {
             InitializeComponent();
@@ -72,12 +75,44 @@ namespace Nodio
 
         private void btnPlaySound_Click(object sender, RoutedEventArgs e)
         {
-            ISoundEngine soundengine = new ISoundEngine();
-            var projectPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(Directory.GetCurrentDirectory()));
-            var soundPath = System.IO.Path.Combine(projectPath, "../data/sound");
-            Console.WriteLine(projectPath);//Environment.CurrentDirectory);
-            ISound sound = soundengine.Play2D(System.IO.Path.Combine(soundPath,"bell.wav"));
-            sound.Looped = true;
+
+            if (outputDevice == null)
+            {
+                outputDevice = new WaveOutEvent();
+                outputDevice.PlaybackStopped += OnPlaybackStopped;
+            }
+            if(audioFile == null)
+            {
+                audioFile = new AudioFileReader(System.IO.Path.Combine(Globals.SOUND_PATH, "bell.wav"));
+                
+                outputDevice.Init(audioFile);
+            }
+            outputDevice.Play();
+        }
+        private void btnStopSound_Click(object sender, RoutedEventArgs e)
+        {
+            if(outputDevice != null)
+                outputDevice.Stop();
+        }
+            void OnPlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            //groupBoxDriverModel.Enabled = true;
+            if (e.Exception != null)
+            {
+                MessageBox.Show(e.Exception.Message, "Playback Device Error");
+            }
+
+            if (outputDevice != null)
+            {
+                outputDevice.Dispose();
+                outputDevice = null;
+            }
+            if (audioFile != null)
+            {
+                audioFile.Position = 0;
+                audioFile.Dispose();
+                audioFile = null;
+            }
         }
     }
 }
